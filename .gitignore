@@ -1,0 +1,16 @@
+# Ignorar dependencias de Node
+backend/node_modules/
+backend/pruebas.http
+backend/src/config
+frontend/node_modules/
+
+# Archivos de entorno
+backend/.env
+frontend/.env
+
+# Imágenes subidas
+backend/public/img/equipos/
+
+# Archivos temporales
+*.log
+.DS_Store
