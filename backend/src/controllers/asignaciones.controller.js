@@ -8,14 +8,14 @@ const obtenerAsignaciones = (req, res) => {
       a.fecha_asignacion,
       a.observaciones,
       a.activa,
-      u.id_usuario,
-      u.nombre,
-      u.apellidos,
-      u.departamento,
-      e.id_equipo,
+      u.usuario_servidor AS usuario,
       e.referencia,
       e.marca,
-      e.modelo
+      e.modelo,
+      e.mac_lan,
+      e.mac_wifi,
+      e.numero_serie,
+      e.sistema_operativo
     FROM asignaciones a
     JOIN usuarios u ON a.id_usuario = u.id_usuario
     JOIN equipos e ON a.id_equipo = e.id_equipo
@@ -27,7 +27,6 @@ const obtenerAsignaciones = (req, res) => {
       console.error('Error al obtener asignaciones:', err);
       return res.status(500).json({ error: 'Error al obtener asignaciones' });
     }
-
     res.status(200).json(results);
   });
 };
