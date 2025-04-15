@@ -5,22 +5,25 @@
     <div class="dashboard-grid">
       <!-- Gráfico de pastel -->
       <div class="grafico">
+        <h3 class="grafico-titulo">Disponibilidad de Equipos</h3>
         <Doughnut :data="chartData" :options="chartOptions" />
       </div>
 
       <!-- Gráfico de barras por estado -->
       <div class="grafico">
+        <h3 class="grafico-titulo">Estado de los Equipos</h3>
         <Bar :data="barChartData" :options="barChartOptions" />
       </div>
 
       <!-- Comparación usuarios vs proyectos -->
       <div class="grafico">
+        <h3 class="grafico-titulo">Asignaciones por Destino</h3>
         <Bar :data="destinoChartData" :options="destinoChartOptions" />
       </div>
 
       <!-- Panel equipos libres -->
       <div class="panel-libre">
-        <h3>Equipos Libres</h3>
+        <h3 class="grafico-titulo">Equipos Libres</h3>
         <ul>
           <li v-for="equipo in equiposLibres" :key="equipo.id_equipo">
             {{ equipo.referencia }}
@@ -30,7 +33,7 @@
 
       <!-- Panel asignaciones activas -->
       <div class="panel-asignados">
-        <h3>Equipos Asignados</h3>
+        <h3 class="grafico-titulo">Equipos Asignados</h3>
         <table>
           <thead>
             <tr>
@@ -338,6 +341,14 @@ export default {
 .panel-asignados tr:hover {
   background-color: #f3f4f6;
   transition: background-color 0.3s;
+}
+
+.grafico-titulo {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: center;
 }
 
 </style>

@@ -1,8 +1,8 @@
 <template>
   <nav class="navbar">
     <div class="logo-area">
-      <img src="/vite.svg" alt="logo" class="logo" />
-      <span class="titulo">Inventario</span>
+      <img src="../assets/logo-gestia.png" alt="Gestia Logo" class="logo" />
+      <span class="titulo">Gestia</span>
     </div>
     <ul class="menu">
       <li><router-link to="/" exact-active-class="active">INICIO</router-link></li>
@@ -34,6 +34,7 @@
 .logo-area {
   display: flex;
   align-items: center;
+  gap: 0.6rem;
 }
 
 .logo {
