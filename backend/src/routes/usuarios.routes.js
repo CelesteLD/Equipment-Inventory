@@ -6,6 +6,7 @@ const usuariosController = require('../controllers/usuarios.controller');
 router.get('/', usuariosController.obtenerUsuarios);
 // Crear nuevo usuario
 router.post('/', usuariosController.crearUsuario);
-
+// Cambiar el estado de un usuario
+router.put('/:id/estado', usuariosController.cambiarEstadoUsuario);
 
 module.exports = router;

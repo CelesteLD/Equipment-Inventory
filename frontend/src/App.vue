@@ -12,3 +12,10 @@ export default {
   components: { Navbar }
 }
 </script>
+
+<style>
+/* ✅ Fuente global */
+* {
+  font-family: 'Poppins', sans-serif;
+}
+</style>

@@ -62,8 +62,63 @@ const crearEquipo = (req, res) => {
   };
   
 
+  const actualizarEquipo = (req, res) => {
+    const { id } = req.params;
+    const {
+      referencia,
+      marca,
+      modelo,
+      mac_lan,
+      mac_wifi,
+      numero_serie,
+      sistema_operativo,
+      imagen,
+      estado
+    } = req.body;
+  
+    const query = `
+      UPDATE equipos SET 
+        referencia = ?, 
+        marca = ?, 
+        modelo = ?, 
+        mac_lan = ?, 
+        mac_wifi = ?, 
+        numero_serie = ?, 
+        sistema_operativo = ?, 
+        imagen = ?, 
+        estado = ?
+      WHERE id_equipo = ?
+    `;
+  
+    db.query(
+      query,
+      [
+        referencia,
+        marca,
+        modelo,
+        mac_lan || null,
+        mac_wifi || null,
+        numero_serie || null,
+        sistema_operativo || null,
+        imagen || null,
+        estado || 'disponible',
+        id
+      ],
+      (err, result) => {
+        if (err) {
+          console.error('Error al actualizar equipo:', err);
+          return res.status(500).json({ error: 'No se pudo actualizar el equipo.' });
+        }
+  
+        res.status(200).json({ mensaje: 'Equipo actualizado correctamente' });
+      }
+    );
+  };
+  
+
 module.exports = {
     obtenerEquipos,
     crearEquipo,
+    actualizarEquipo
 };
   

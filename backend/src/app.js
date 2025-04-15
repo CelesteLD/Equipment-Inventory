@@ -21,8 +21,11 @@ app.use('/api/equipos', equiposRoutes);
 const asignacionesRoutes = require('./routes/asignaciones.routes');
 app.use('/api/asignaciones', asignacionesRoutes);
 
+const proyectosRoutes = require('./routes/proyectos.routes');
+app.use('/api/proyectos', proyectosRoutes);
 
-
+// Servir archivos estáticos
+app.use('/imagenes-equipos', express.static(path.join(__dirname, '../public/imagenes-equipos')));
 
 // Conectar a DB
 require('./config/db');

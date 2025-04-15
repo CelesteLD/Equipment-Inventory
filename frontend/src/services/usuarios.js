@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const API_URL = 'http://localhost:3000/api/usuarios';
 
 export const obtenerUsuarios = async () => {
@@ -24,4 +26,8 @@ export const crearUsuario = async (usuario) => {
     console.error('Error desde servicio:', error);
     throw error;
   }
+};
+
+export const actualizarEstadoUsuario = async (id, nuevoEstado) => {
+  await axios.put(`${API_URL}/${id}/estado`, { activo: nuevoEstado });
 };

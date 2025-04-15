@@ -6,6 +6,8 @@ const equiposController = require('../controllers/equipos.controller');
 router.get('/', equiposController.obtenerEquipos);
 // Crear nuevo equipo
 router.post('/', equiposController.crearEquipo);
+// PUT de modificación de estado
+router.put('/:id', equiposController.actualizarEquipo);
 
 
 module.exports = router;

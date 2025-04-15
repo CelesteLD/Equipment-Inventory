@@ -21,28 +21,45 @@
         v-for="equipo in equiposFiltrados"
         :key="equipo.id_equipo"
         :class="['equipo-card', equipo.estado]"
+        @click="equipoSeleccionado = equipo"
       >
+        <img
+          v-if="equipo.imagen"
+          :src="getImagenUrl(equipo.imagen)"
+          :alt="equipo.marca"
+          class="equipo-img"
+        />
         <strong>{{ equipo.referencia }}</strong>
         <p>{{ equipo.marca }} {{ equipo.modelo }}</p>
         <p>{{ equipo.sistema_operativo }}</p>
       </div>
     </div>
+
+    <!-- Modal -->
+    <ModalEquipo
+      v-if="equipoSeleccionado"
+      :equipo="equipoSeleccionado"
+      @guardar="editarEquipo"
+      @cerrar="equipoSeleccionado = null"
+    />
   </div>
 </template>
 
 <script>
 import { ref, onMounted, computed } from 'vue';
-import { obtenerEquipos, crearEquipo } from '../services/equipos';
+import { obtenerEquipos, crearEquipo, actualizarEquipo } from '../services/equipos';
 import FiltroEquipos from '../components/FiltroEquipos.vue';
 import FormularioEquipo from '../components/FormularioEquipo.vue';
+import ModalEquipo from '../components/ModalEquipo.vue';
 
 export default {
   name: 'EquiposView',
-  components: { FiltroEquipos, FormularioEquipo },
+  components: { FiltroEquipos, FormularioEquipo, ModalEquipo },
   setup() {
     const equipos = ref([]);
     const filtros = ref({ referencia: '', marca: '', modelo: '' });
     const mostrarFormulario = ref(false);
+    const equipoSeleccionado = ref(null);
 
     const cargarEquipos = async () => {
       equipos.value = await obtenerEquipos();
@@ -62,6 +79,16 @@ export default {
       }
     };
 
+    const editarEquipo = async (equipoEditado) => {
+      try {
+        await actualizarEquipo(equipoEditado.id_equipo, equipoEditado);
+        equipoSeleccionado.value = null;
+        await cargarEquipos();
+      } catch (error) {
+        console.error('Error al actualizar el equipo:', error);
+      }
+    };
+
     const equiposFiltrados = computed(() => {
       return equipos.value.filter((e) => {
         const r = e.referencia.toLowerCase().includes(filtros.value.referencia.toLowerCase());
@@ -71,6 +98,8 @@ export default {
       });
     });
 
+    const getImagenUrl = (nombre) => `http://localhost:3000/imagenes-equipos/${nombre}`;
+
     onMounted(() => {
       cargarEquipos();
     });
@@ -79,7 +108,10 @@ export default {
       equiposFiltrados,
       mostrarFormulario,
       aplicarFiltros,
-      guardarEquipo
+      guardarEquipo,
+      getImagenUrl,
+      equipoSeleccionado,
+      editarEquipo
     };
   }
 };
@@ -126,7 +158,24 @@ export default {
   color: white;
   font-weight: bold;
   text-align: center;
-  min-height: 120px;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.equipo-card:hover {
+  transform: scale(1.03);
+}
+
+.equipo-img {
+  max-width: 100%;
+  max-height: 60px;
+  object-fit: contain;
+  margin: 0 auto 0.3rem;
 }
 
 /* Estados */

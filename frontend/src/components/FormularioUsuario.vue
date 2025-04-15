@@ -24,11 +24,6 @@
         </div>
   
         <div class="campo">
-          <label>Identificación:</label>
-          <input v-model="usuario.identificacion" type="text" required />
-        </div>
-  
-        <div class="campo">
           <label>Departamento:</label>
           <select v-model="usuario.departamento" required>
             <option disabled value="">Seleccione uno</option>
@@ -62,7 +57,6 @@
           apellidos: '',
           correo: '',
           usuario_servidor: '',
-          identificacion: '',
           departamento: '',
           activo: true
         },

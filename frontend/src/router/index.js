@@ -9,7 +9,13 @@ const routes = [
     path: '/asignaciones',
     name: 'Asignaciones',
     component: () => import('../views/AsignacionesView.vue')
-  }  
+  },
+  {
+    path: '/',
+    name: 'Inicio',
+    component: () => import('../views/InicioView.vue')
+  }
+  
 ];
 
 const router = createRouter({

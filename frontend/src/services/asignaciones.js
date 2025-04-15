@@ -12,3 +12,8 @@ export const crearAsignacion = async (datos) => {
   return res.data;
 };
 
+// ✅ Añade esta función:
+export const finalizarAsignacion = async (id) => {
+  const res = await axios.put(`${API_URL}/${id}`);
+  return res.data;
+};

@@ -11,3 +11,8 @@ export const crearEquipo = async (equipo) => {
   const res = await axios.post(API_URL, equipo);
   return res.data;
 };
+
+export const actualizarEquipo = async (id, equipo) => {
+  const res = await axios.put(`${API_URL}/${id}`, equipo);
+  return res.data;
+};
