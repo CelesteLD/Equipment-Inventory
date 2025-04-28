@@ -62,14 +62,15 @@
         },
         departamentos: [
           'ADMINISTRACION',
-          'AT.SOCIAL',
+          'ATENCIÓN SOCIAL',
           'COMERCIAL',
-          'DIRECCION',
-          'FORMACION',
+          'DIRECCIÓN',
+          'FORMACIÓN',
           'PRACTICAS',
-          'PSICOLOGIA',
+          'PSICOLOGÍA',
           'SECRETARÍA',
-          'SERVICIOS GENERALES'
+          'SERVICIOS GENERALES',
+          'PRÁCTICAS'
         ]
       };
     },
