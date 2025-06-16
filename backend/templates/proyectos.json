@@ -1,0 +1,18 @@
+{
+  "digitaliza-t": {
+    "requisitos": "Mujeres mayores de 16 años desempleadas y con DARDE en vigor",
+    "logo": ["financ.png", "gob-espa.png", "plan-rec.jpg", "sepe.png", "sepe.jpg"]
+  },
+  "creatividad en la naturaleza": {
+    "requisitos": "Jóvenes de 14 a 24 años",
+    "logo": ["gob-can.png"]
+  },
+  "aprender para cuidar": {
+    "requisitos": "",
+    "logo": ["gob-can.png"]
+  },
+  "cursos privados presenciales": {
+    "requisitos": "",
+    "logo": []
+  }
+}

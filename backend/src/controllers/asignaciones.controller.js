@@ -162,9 +162,11 @@ const obtenerAsignacionesPorEquipo = (req, res) => {
       u.id_usuario,
       u.nombre,
       u.apellidos,
-      u.departamento
+      u.departamento,
+      p.nombre AS proyecto
     FROM asignaciones a
     LEFT JOIN usuarios u ON a.id_usuario = u.id_usuario
+    LEFT JOIN proyectos p ON a.id_proyecto = p.id_proyecto
     WHERE a.id_equipo = ?
     ORDER BY a.fecha_asignacion DESC
   `;
@@ -178,6 +180,7 @@ const obtenerAsignacionesPorEquipo = (req, res) => {
     res.status(200).json(results);
   });
 };
+
 
 module.exports = {
   obtenerAsignaciones,
