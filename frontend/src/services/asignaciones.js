@@ -17,3 +17,10 @@ export const finalizarAsignacion = async (id) => {
   const res = await axios.put(`${API_URL}/${id}`);
   return res.data;
 };
+
+
+export const obtenerHistorialEquipo = async (id_equipo) => {
+  const res = await axios.get(`${API_URL}/equipo/${id_equipo}`);
+  return res.data;
+};
+

@@ -10,9 +10,11 @@
       <li><router-link to="/usuarios" exact-active-class="active">USUARIOS</router-link></li>
       <li><router-link to="/asignaciones" exact-active-class="active">ASIGNACIONES</router-link></li>
       <li><router-link to="/documentos" exact-active-class="active">DOCUMENTOS</router-link></li>
+      <li><router-link to="/carteles" exact-active-class="active">CARTELES</router-link></li>
     </ul>
   </nav>
 </template>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');

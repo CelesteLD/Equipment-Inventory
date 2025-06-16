@@ -21,7 +21,7 @@
         v-for="equipo in equiposFiltrados"
         :key="equipo.id_equipo"
         :class="['equipo-card', equipo.estado]"
-        @click="equipoSeleccionado = equipo"
+        @click="verDetalleEquipo(equipo)"
       >
         <img
           v-if="equipo.imagen"
@@ -35,10 +35,11 @@
       </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal con detalle e historial -->
     <ModalEquipo
       v-if="equipoSeleccionado"
       :equipo="equipoSeleccionado"
+      :historial="historialEquipo"
       @guardar="editarEquipo"
       @cerrar="equipoSeleccionado = null"
     />
@@ -47,7 +48,12 @@
 
 <script>
 import { ref, onMounted, computed } from 'vue';
-import { obtenerEquipos, crearEquipo, actualizarEquipo } from '../services/equipos';
+import {
+  obtenerEquipos,
+  crearEquipo,
+  actualizarEquipo
+} from '../services/equipos';
+import { obtenerHistorialEquipo } from '../services/asignaciones';
 import FiltroEquipos from '../components/FiltroEquipos.vue';
 import FormularioEquipo from '../components/FormularioEquipo.vue';
 import ModalEquipo from '../components/ModalEquipo.vue';
@@ -60,6 +66,7 @@ export default {
     const filtros = ref({ referencia: '', marca: '', modelo: '' });
     const mostrarFormulario = ref(false);
     const equipoSeleccionado = ref(null);
+    const historialEquipo = ref([]);
 
     const cargarEquipos = async () => {
       equipos.value = await obtenerEquipos();
@@ -89,6 +96,16 @@ export default {
       }
     };
 
+    const verDetalleEquipo = async (equipo) => {
+      equipoSeleccionado.value = equipo;
+      try {
+        historialEquipo.value = await obtenerHistorialEquipo(equipo.id_equipo);
+      } catch (error) {
+        console.error('Error al cargar historial:', error);
+        historialEquipo.value = [];
+      }
+    };
+
     const equiposFiltrados = computed(() => {
       return equipos.value.filter((e) => {
         const r = e.referencia.toLowerCase().includes(filtros.value.referencia.toLowerCase());
@@ -111,7 +128,9 @@ export default {
       guardarEquipo,
       getImagenUrl,
       equipoSeleccionado,
-      editarEquipo
+      editarEquipo,
+      historialEquipo,
+      verDetalleEquipo
     };
   }
 };
