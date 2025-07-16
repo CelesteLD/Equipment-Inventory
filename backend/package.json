@@ -12,14 +12,16 @@
   "description": "",
   "dependencies": {
     "@xmldom/xmldom": "^0.9.8",
+    "bcrypt": "^6.0.0",
     "canvas": "^3.1.0",
     "chartjs-plugin-datalabels": "^2.2.0",
     "cors": "^2.8.5",
     "docxtemplater": "^3.63.2",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.6.1",
     "express": "^5.1.0",
     "express-fileupload": "^1.5.1",
-    "mysql2": "^3.14.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.14.1",
     "papaparse": "^5.5.3",
     "pdfkit": "^0.17.1",
     "pizzip": "^3.2.0"

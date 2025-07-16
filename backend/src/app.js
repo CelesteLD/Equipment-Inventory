@@ -42,3 +42,7 @@ require('./config/db');
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
+// Loggin
+const authRoutes = require('./routes/auth.routes');
+app.use('/api/auth', authRoutes);

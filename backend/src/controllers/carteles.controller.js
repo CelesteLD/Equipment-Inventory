@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { createCanvas, loadImage } = require('canvas');
+let contadorCarteles = 1; // 🔢 Contador global que se incrementa por cada cartel generado
 
 function dividirTextoEnLineas(ctx, texto, maxAncho) {
   const palabras = texto.split(' ');
@@ -77,9 +78,11 @@ const generarCartel = async (req, res) => {
     modalidad,
     importe,
     practicas,
-    proyecto
+    proyecto,
+    ubicacion// ✅ nuevo campo
   } = req.body;
 
+  console.log('Ubicación recibida:', ubicacion);
   try {
     const width = 1240;
     let footerHeight = 200;
@@ -100,7 +103,6 @@ const generarCartel = async (req, res) => {
 
     if (!fondoFilename) throw new Error(`No se encontró imagen de fondo para: "${nombreBase}"`);
 
-    // Ajustar altura del footer si hay múltiples logos
     if (Array.isArray(logos) && logos.length > 1) {
       footerHeight = 300;
     }
@@ -212,15 +214,42 @@ const generarCartel = async (req, res) => {
     // === Datos del curso
     drawBox(parseFloat(importe) === 0 ? 'Importe: Gratuito' : `Importe: ${importe} €`, 60, 360);
     drawBox(`Modalidad: ${modalidad || 'Presencial'}`, 60, 460);
-    if (requisitosTexto.trim()) drawRequisitosBox(`Requisitos:\n${requisitosTexto}`, 60, 560);
+
+    let ySiguiente = 560;
+
+    if (ubicacion) {
+      ctx.font = 'bold 36px sans-serif';
+      const lineasUbicacion = dividirTextoEnLineas(ctx, `📍 Ubicación: ${ubicacion}`, 1100); // ajusta el ancho máx
+      const altoCaja = 80 + (lineasUbicacion.length - 1) * 45;
+
+      ctx.fillStyle = '#0d47a1';
+      ctx.fillRect(60, ySiguiente, 1120, altoCaja); // ancho fijo del recuadro
+
+      ctx.fillStyle = 'white';
+      lineasUbicacion.forEach((linea, i) => {
+        ctx.fillText(linea, 60 + 20, ySiguiente + 55 + i * 45);
+      });
+
+      ySiguiente += altoCaja + 20;
+    }
+
+
+
+    if (requisitosTexto.trim()) {
+      drawRequisitosBox(`Requisitos:\n${requisitosTexto}`, 60, ySiguiente);
+      ySiguiente += 160;
+    }
+
     const yFecha = 1300;
     if (fechaInicio != fechaFin) {
       drawBox(`Fecha de impartición: Del ${fechaInicio} al ${fechaFin}\nHorario: ${horario}`, 60, yFecha, 34);
     } else {
       drawBox(`Fecha de impartición: El ${fechaInicio}\nHorario: ${horario}`, 60, yFecha, 34);
     }
-    
-    if (practicas === 'Si') drawBox('Posibilidad de prácticas en empresas', 60, yFecha + 160, 36);
+
+    if (practicas === 'Si') {
+      drawBox('Posibilidad de prácticas en empresas', 60, yFecha + 160, 36);
+    }
 
     // === Footer
     ctx.fillStyle = 'white';
@@ -232,36 +261,34 @@ const generarCartel = async (req, res) => {
     ctx.lineTo(width, height - footerHeight);
     ctx.stroke();
 
-    // Logos centrados en el footer si hay más de uno
-if (Array.isArray(logos) && logos.length > 1) {
-  const logoHeight = 50;
-  const spacing = 40;
-  const yLogo = height - footerHeight + 20;
+    if (Array.isArray(logos) && logos.length > 1) {
+      const logoHeight = 50;
+      const spacing = 40;
+      const yLogo = height - footerHeight + 20;
 
-  // Cargar todas las imágenes primero y calcular el ancho total
-  const logoImages = await Promise.all(
-    logos.map(async (logoFile) => {
-      const fullPath = path.join(__dirname, '../../templates/logos', logoFile);
-      if (fs.existsSync(fullPath)) {
-        const img = await loadImage(fullPath);
-        const logoWidth = logoHeight * (img.width / img.height);
-        return { img, logoWidth };
+      const logoImages = await Promise.all(
+        logos.map(async (logoFile) => {
+          const fullPath = path.join(__dirname, '../../templates/logos', logoFile);
+          if (fs.existsSync(fullPath)) {
+            const img = await loadImage(fullPath);
+            const logoWidth = logoHeight * (img.width / img.height);
+            return { img, logoWidth };
+          }
+          return null;
+        })
+      );
+
+      const validLogos = logoImages.filter(Boolean);
+      const totalLogosWidth = validLogos.reduce((sum, l) => sum + l.logoWidth, 0);
+      const totalSpacing = spacing * (validLogos.length - 1);
+      const totalWidth = totalLogosWidth + totalSpacing;
+
+      let xStart = (width - totalWidth) / 2;
+
+      for (const { img, logoWidth } of validLogos) {
+        ctx.drawImage(img, xStart, yLogo, logoWidth, logoHeight);
+        xStart += logoWidth + spacing;
       }
-      return null;
-    })
-  );
-
-  const validLogos = logoImages.filter(Boolean);
-  const totalLogosWidth = validLogos.reduce((sum, l) => sum + l.logoWidth, 0);
-  const totalSpacing = spacing * (validLogos.length - 1);
-  const totalWidth = totalLogosWidth + totalSpacing;
-
-  let xStart = (width - totalWidth) / 2;
-
-  for (const { img, logoWidth } of validLogos) {
-    ctx.drawImage(img, xStart, yLogo, logoWidth, logoHeight);
-    xStart += logoWidth + spacing;
-  }
     } else if (logos.length === 1) {
       const fullPath = path.join(__dirname, '../../templates/logos', logos[0]);
       if (fs.existsSync(fullPath)) {
@@ -270,30 +297,29 @@ if (Array.isArray(logos) && logos.length > 1) {
       }
     }
 
-    // Datos de contacto
     ctx.fillStyle = '#0d47a1';
     ctx.font = 'bold 28px sans-serif';
     ctx.fillText('📞 922 250 639', 90, height - 140);
     ctx.fillText('📱 627 340 214', 340, height - 140);
     ctx.fillText('✉️ formacion@asociacionaisa.org', 620, height - 140);
 
-    // Web
     ctx.fillStyle = '#ff8a50';
     ctx.font = 'bold 38px sans-serif';
     const web = '🌐 www.asociacionaisa.org';
     ctx.fillText(web, (width - ctx.measureText(web).width) / 2, height - 60);
 
-    // QR
     const qrPath = path.join(__dirname, '../../templates/qr-cartel.png');
     if (fs.existsSync(qrPath)) {
       const qr = await loadImage(qrPath);
       ctx.drawImage(qr, width - 110, height - 110, 80, 80);
     }
 
-    // Guardar imagen
-    const slugify = (t) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    const slugify = (t) =>
+      t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     const formatFecha = (f) => f.split('/').slice(0, 2).join('.');
-    const fileName = `cartel-${slugify(nombre.split(' - ')[0])}-${formatFecha(fechaInicio)}-${formatFecha(fechaFin)}.png`;
+    const fileName = `${contadorCarteles}-cartel-${slugify(nombre.split(' - ')[0])}-${formatFecha(fechaInicio)}-${formatFecha(fechaFin)}.png`;
+
+    contadorCarteles++; // Incrementar contador
 
     const outputPath = path.join(__dirname, '../../public/carteles', fileName);
     const out = fs.createWriteStream(outputPath);
@@ -304,8 +330,6 @@ if (Array.isArray(logos) && logos.length > 1) {
     console.error('Error generando cartel:', err);
     res.status(500).send('Error generando cartel');
   }
-
-
 };
 
 module.exports = { generarCartel, generarCartelRedes };
