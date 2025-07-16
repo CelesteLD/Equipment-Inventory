@@ -33,6 +33,7 @@
             <th>Importe</th>
             <th>Prácticas</th>
             <th>Proyecto</th>
+            <th>Ubicación</th>
             <th>Cartel</th>
           </tr>
         </thead>
@@ -56,6 +57,7 @@
                 {{ evento.Proyecto }}
               </span>
             </td>
+            <td>{{ evento['Ubicaciones'] }}</td>
             <td>
               <button
                 @click="generarCartelDesdeEvento(evento)"
@@ -74,7 +76,7 @@
 
 <script>
 import Papa from 'papaparse';
-import { generarCartelEvento } from '../services/carteles';
+import { generarCartelEvento, generarCartelesRedes } from '../services/carteles';
 
 export default {
   name: 'CartelesView',
@@ -113,44 +115,51 @@ export default {
     },
 
     async generarCartelDesdeEvento(evento) {
-  try {
-    const response = await generarCartelEvento({
-        nombre: evento.Nombre,
-        fechaInicio: evento['Fecha de inicio'],
-        fechaFin: evento['Fecha de finalización'],
-        horario: evento.Horario,
-        modalidad: evento['Subtipo curso'],
-        importe: evento.Importe,
-        practicas: evento['Prácticas en empresa'],
-        proyecto: evento.Proyecto
-      });
-      window.open(response.url, '_blank');
-    } catch (err) {
-      alert(`Error generando el cartel para "${evento.Nombre}". Revisa consola.`);
-      console.error(err);
-    }
-  },
-  async generarCartelesRedes() {
-    try {
-      await fetch('/api/carteles/generar-redes', { method: 'POST' });
-      alert('Carteles adaptados para redes generados correctamente.');
-    } catch (error) {
-      alert('Error al generar carteles de redes.');
-      console.error(error);
-    }
-  },
-  async generarTodos() {
-    for (const evento of this.eventosOrdenados) {
-      await this.generarCartelDesdeEvento(evento);
-    }
-  },
+      try {
+        const response = await generarCartelEvento({
+          nombre: evento.Nombre,
+          fechaInicio: evento['Fecha de inicio'],
+          fechaFin: evento['Fecha de finalización'],
+          horario: evento.Horario,
+          modalidad: evento['Subtipo curso'],
+          importe: evento.Importe,
+          practicas: evento['Prácticas en empresa'],
+          proyecto: evento.Proyecto,
+          ubicacion: evento['Ubicaciones'] // ✅ Añadido
+        });
+        window.open(response.url, '_blank');
+      } catch (err) {
+        alert(`Error generando el cartel para "${evento.Nombre}". Revisa consola.`);
+        console.error(err);
+      }
+    },
+
+    async generarCartelesRedes() {
+      try {
+        await generarCartelesRedes();
+        alert('Carteles adaptados para redes generados correctamente.');
+      } catch (error) {
+        alert('Error al generar carteles de redes.');
+        console.error(error);
+      }
+    },
+
+
+    async generarTodos() {
+      for (const evento of this.eventosOrdenados) {
+        await this.generarCartelDesdeEvento(evento);
+      }
+    },
+
     ordenarPorFechaInicio() {
       this.ordenAscendente = !this.ordenAscendente;
     },
+
     convertirFecha(fechaStr) {
       const [dia, mes, anio] = fechaStr.split('/');
       return new Date(`${anio}-${mes}-${dia}`);
     },
+
     getProyectoClase(nombre) {
       const n = nombre?.toLowerCase() || '';
       if (n.includes('privado')) return 'proyecto-privado';
@@ -159,6 +168,7 @@ export default {
       if (n.includes('cuidar')) return 'proyecto-cuidar';
       return 'proyecto-default';
     },
+
     getProyectoTextClase(nombre) {
       const n = nombre?.toLowerCase() || '';
       if (n.includes('privado')) return 'text-privado';
@@ -167,6 +177,7 @@ export default {
       if (n.includes('cuidar')) return 'text-cuidar';
       return 'text-default';
     },
+
     getProyectoFilaClase(nombre) {
       const n = nombre?.toLowerCase() || '';
       if (n.includes('privado')) return 'fila-privado';
@@ -178,6 +189,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .carteles-view {

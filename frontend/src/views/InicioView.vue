@@ -1,5 +1,8 @@
 <template>
   <div class="dashboard-layout">
+    <div class="logout-wrapper">
+      <button @click="cerrarSesion" class="logout-btn">Cerrar sesión</button>
+    </div>
     <h2 class="titulo">Panel de Control</h2>
 
     <div class="dashboard-grid">
@@ -69,6 +72,7 @@ import {
 
 import { obtenerEquipos } from '../services/equipos';
 import { obtenerAsignaciones } from '../services/asignaciones';
+import { useRouter } from 'vue-router';
 
 ChartJS.register(
   ArcElement,
@@ -84,6 +88,14 @@ export default {
   name: 'InicioView',
   components: { Doughnut, Bar },
   setup() {
+
+    const router = useRouter();
+
+    const cerrarSesion = () => {
+      localStorage.removeItem('token');
+      router.push('/login'); // Asegúrate de que esa ruta exista
+    };
+
     const equipos = ref([]);
     const asignaciones = ref([]);
 
@@ -96,9 +108,14 @@ export default {
       equipos.value.filter((e) => e.estado === 'disponible')
     );
 
-    const asignacionesActivas = computed(() =>
-      asignaciones.value.filter((a) => a.activa === 1)
+    const equiposEnUso = computed(() =>
+      equipos.value.filter((e) => e.estado === 'asignado')
     );
+
+    const asignacionesActivas = computed(() =>
+      asignaciones.value.filter((a) => a.activa)
+    );
+
 
     const asignacionesOrdenadas = computed(() => {
       return asignacionesActivas.value
@@ -134,7 +151,7 @@ export default {
       labels: ['Disponibles', 'En uso'],
       datasets: [
         {
-          data: [equiposLibres.value.length, asignacionesActivas.value.length],
+          data: [equiposLibres.value.length, equiposEnUso.value.length],
           backgroundColor: ['#4ade80', '#f87171']
         }
       ]
@@ -230,20 +247,20 @@ export default {
       }
     };
 
-    onMounted(async () => {
-      await cargarDatos();
-    });
+    onMounted(cargarDatos);
 
     return {
       chartData,
       chartOptions,
       equiposLibres,
+      equiposEnUso,
       asignacionesActivas,
       asignacionesOrdenadas,
       barChartData,
       barChartOptions,
       destinoChartData,
-      destinoChartOptions
+      destinoChartOptions,
+      cerrarSesion
     };
   }
 };
@@ -350,5 +367,27 @@ export default {
   color: #1f2937;
   text-align: center;
 }
+
+.logout-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.logout-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #dc2626;
+}
+
 
 </style>

@@ -1,33 +1,34 @@
-import axios from 'axios';
+// src/services/usuarios.js
+import api from './api';
 
-const API_URL = 'http://localhost:3000/api/usuarios';
-
+// Obtener todos los usuarios
 export const obtenerUsuarios = async () => {
   try {
-    const res = await fetch(API_URL);
-    return await res.json();
+    const res = await api.get('/usuarios');
+    return res.data;
   } catch (error) {
     console.error(error);
     return [];
   }
 };
 
+// Crear nuevo usuario
 export const crearUsuario = async (usuario) => {
   try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(usuario)
-    });
-
-    if (!res.ok) throw new Error('Error al crear usuario');
-    return await res.json();
+    const res = await api.post('/usuarios', usuario);
+    return res.data;
   } catch (error) {
     console.error('Error desde servicio:', error);
     throw error;
   }
 };
 
+// Actualizar estado del usuario
 export const actualizarEstadoUsuario = async (id, nuevoEstado) => {
-  await axios.put(`${API_URL}/${id}/estado`, { activo: nuevoEstado });
+  try {
+    await api.put(`/usuarios/${id}/estado`, { activo: nuevoEstado });
+  } catch (error) {
+    console.error('Error al actualizar estado:', error);
+    throw error;
+  }
 };

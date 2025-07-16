@@ -1,22 +1,22 @@
+import api from './api';
+
 export async function generarCartelEvento(evento) {
   try {
-    const response = await fetch('/api/carteles/generar', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(evento)
-    });
+    const response = await api.post('/carteles/generar', evento);
 
-    if (!response.ok) {
-      const texto = await response.text();
-      throw new Error(`Error al generar el cartel: ${texto}`);
-    }
-
-    const data = await response.json();
-    return data; // data.url
+    return response.data; // data.url
   } catch (error) {
-    console.error('Error en generarCartelEvento:', error.message);
+    console.error('Error en generarCartelEvento:', error.response?.data || error.message);
+    throw error;
+  }
+}
+
+export async function generarCartelesRedes() {
+  try {
+    const response = await api.post('/carteles/generar-redes');
+    return response.data;
+  } catch (error) {
+    console.error('Error en generarCartelesRedes:', error.response?.data || error.message);
     throw error;
   }
 }

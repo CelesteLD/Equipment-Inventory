@@ -1,13 +1,21 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:3000/api/proyectos';
+import api from './api';
 
 export const obtenerProyectos = async () => {
-  const res = await axios.get(API_URL);
-  return res.data;
+  try {
+    const res = await api.get('/proyectos');
+    return res.data;
+  } catch (error) {
+    console.error('Error al obtener proyectos:', error);
+    return [];
+  }
 };
 
 export const crearProyecto = async (datos) => {
-  const res = await axios.post(API_URL, datos);
-  return res.data;
+  try {
+    const res = await api.post('/proyectos', datos);
+    return res.data;
+  } catch (error) {
+    console.error('Error al crear proyecto:', error);
+    throw error;
+  }
 };

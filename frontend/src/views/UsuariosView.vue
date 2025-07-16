@@ -24,8 +24,9 @@
         :class="['usuario-card', getDepartamentoClass(usuario.departamento)]"
         @click="toggleActivo(usuario)"
       >
-        <strong>📝 {{ usuario.nombre }}</strong>
+        <strong>📝 {{ usuario.nombre }} {{usuario.apellidos}}</strong>
         <p>👤 {{ usuario.usuario_servidor.toUpperCase() }}</p>
+        <p class="correo">{{ usuario.correo }}</p>
         <p>🏢 {{ usuario.departamento }}</p>
       </div>
 
@@ -41,6 +42,7 @@
       >
       <strong>📝 {{ usuario.nombre }}</strong>
       <p>👤 {{ usuario.usuario_servidor.toUpperCase() }}</p>
+      <p class="correo">{{ usuario.correo }}</p>
       <p>🏢 {{ usuario.departamento }}</p>
       </div>
     </div>
@@ -175,11 +177,16 @@ export default {
   color: white;
   font-weight: 500;
   text-align: center;
-  min-height: 120px;
+  min-height: 160px; /* aumentado */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.4rem; /* añade separación entre líneas */
 }
+
 .usuario-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
@@ -247,4 +254,13 @@ export default {
 .btn:hover {
   background: linear-gradient(135deg, #0056b3, #003e80);
 }
+
+.correo {
+  font-size: 0.62rem;
+  opacity: 0.85;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+
 </style>

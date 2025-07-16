@@ -1,7 +1,7 @@
-import axios from 'axios'
+import api from './api';
 
-const API = '/api/documentos'
+const API = '/documentos';
 
 export const generarDocumento = (id, tipo) => {
-  return axios.post(`${API}/${tipo}/${id}`, {}, { responseType: 'blob' })
-}
+  return api.post(`${API}/${tipo}/${id}`, {}, { responseType: 'blob' });
+};

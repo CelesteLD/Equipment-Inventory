@@ -1,18 +1,31 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:3000/api/equipos';
+import api from './api';
 
 export const obtenerEquipos = async () => {
-  const res = await axios.get(API_URL);
-  return res.data;
+  try {
+    const res = await api.get('/equipos');
+    return res.data;
+  } catch (error) {
+    console.error('Error al obtener equipos:', error);
+    return [];
+  }
 };
 
 export const crearEquipo = async (equipo) => {
-  const res = await axios.post(API_URL, equipo);
-  return res.data;
+  try {
+    const res = await api.post('/equipos', equipo);
+    return res.data;
+  } catch (error) {
+    console.error('Error al crear equipo:', error);
+    throw error;
+  }
 };
 
 export const actualizarEquipo = async (id, equipo) => {
-  const res = await axios.put(`${API_URL}/${id}`, equipo);
-  return res.data;
+  try {
+    const res = await api.put(`/equipos/${id}`, equipo);
+    return res.data;
+  } catch (error) {
+    console.error('Error al actualizar equipo:', error);
+    throw error;
+  }
 };

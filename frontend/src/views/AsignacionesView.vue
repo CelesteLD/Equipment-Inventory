@@ -28,7 +28,7 @@
           <th>S.O</th>
           <th>ASIGNADO A</th>
           <th>FECHA ENTREGA</th>
-          <th>OBSERVA</th>
+          <th>OBSERVACION</th>
           <th></th>
         </tr>
       </thead>
